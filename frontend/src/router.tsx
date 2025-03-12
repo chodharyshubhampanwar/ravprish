@@ -33,16 +33,6 @@ const router = createBrowserRouter([
         element: <GoalsList />,
         errorElement: <ErrorPage />,
       },
-      {
-        path: "social",
-        element: <Instagram />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: "facebook",
-        element: <Facebook />,
-        errorElement: <ErrorPage />,
-      },
     ],
   },
   {
@@ -111,6 +101,16 @@ const router = createBrowserRouter([
         element: <QuestionView />,
       },
     ],
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "social",
+    element: <Instagram />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "facebook",
+    element: <Facebook />,
     errorElement: <ErrorPage />,
   },
   {
