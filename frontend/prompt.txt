@@ -1,0 +1,219 @@
+create sample payload to test in postman quizattemptresponse:
+// Base user model
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique
+  name             String
+  uid              String            @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  quizAttempts     QuizAttempt[]
+  examAttempts     ExamAttempt[]
+  mockTestAttempts MockTestAttempt[]
+}
+
+// Question related models
+model Question {
+  id            String     @id @default(uuid()) @db.Uuid
+  content       String
+  options       Json // Array of options
+  correctAnswer String
+  explanation   String?
+  marks         Int        @default(1)
+  quizId        String?    @db.Uuid
+  sectionId     String?    @db.Uuid
+  quiz          Quiz?      @relation(fields: [quizId], references: [id])
+  section       Section?   @relation(fields: [sectionId], references: [id])
+  responses     Response[]
+}
+
+// Section related models
+model Section {
+  id          String     @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  examId      String?    @db.Uuid
+  mockTestId  String?    @db.Uuid
+  questions   Question[]
+  exam        Exam?      @relation(fields: [examId], references: [id])
+  mockTest    MockTest?  @relation(fields: [mockTestId], references: [id])
+}
+
+// Quiz related models
+model Quiz {
+  id          String        @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  duration    Int // in minutes
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  questions   Question[]
+  attempts    QuizAttempt[]
+}
+
+// Exam related models
+model Exam {
+  id          String        @id @default(uuid()) @db.Uuid
+  title       String
+  year        Int
+  description String?
+  duration    Int // in minutes
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  sections    Section[]
+  attempts    ExamAttempt[]
+}
+
+// Mock Test related models
+model MockTest {
+  id          String            @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  duration    Int // in minutes
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  sections    Section[]
+  attempts    MockTestAttempt[]
+}
+
+// Attempt tracking models
+model QuizAttempt {
+  id          String           @id @default(uuid()) @db.Uuid
+  userId      String
+  quizId      String           @db.Uuid
+  startedAt   DateTime         @default(now())
+  completedAt DateTime?
+  score       Float?
+  responses   Response[]
+  result      ResponseResult[]
+  user        User             @relation(fields: [userId], references: [uid])
+  quiz        Quiz             @relation(fields: [quizId], references: [id])
+}
+
+model ExamAttempt {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String
+  examId      String     @db.Uuid
+  startedAt   DateTime   @default(now())
+  completedAt DateTime?
+  score       Float?
+  responses   Response[]
+  user        User       @relation(fields: [userId], references: [uid])
+  exam        Exam       @relation(fields: [examId], references: [id])
+}
+
+model MockTestAttempt {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String
+  mockTestId  String     @db.Uuid
+  startedAt   DateTime   @default(now())
+  completedAt DateTime?
+  score       Float?
+  responses   Response[]
+  user        User       @relation(fields: [userId], references: [uid])
+  mockTest    MockTest   @relation(fields: [mockTestId], references: [id])
+}
+
+// Response tracking
+model Response {
+  id                String           @id @default(uuid()) @db.Uuid
+  questionId        String           @db.Uuid
+  answer            String?
+  isCorrect         Boolean?
+  status            ResponseStatus   @default(SKIPPED)
+  quizAttemptId     String?          @db.Uuid
+  examAttemptId     String?          @db.Uuid
+  mockTestAttemptId String?          @db.Uuid
+  question          Question         @relation(fields: [questionId], references: [id])
+  quizAttempt       QuizAttempt?     @relation(fields: [quizAttemptId], references: [id])
+  examAttempt       ExamAttempt?     @relation(fields: [examAttemptId], references: [id])
+  mockTestAttempt   MockTestAttempt? @relation(fields: [mockTestAttemptId], references: [id])
+
+  @@unique([quizAttemptId, questionId])
+}
+
+enum ResponseStatus {
+  ANSWERED
+  SKIPPED
+  MARKED
+}
+
+enum ResponseResult {
+  CORRECT
+  INCORRECT
+  SKIPPED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+ static async createQuizAttempt(req: AuthRequest, res: Response) {
+    try {
+      const quizId = req.params.id;
+      const userId = req.user?.uid;
+
+      if (!quizId) throw new ApiError(400, "Quiz ID is required");
+      if (!userId) return handleUnauthorizedError(res);
+
+      const attempt = await QuizAttemptService.createQuizAttempt({
+        quizId,
+        userId,
+      });
+      res.status(201).json(attempt);
+    } catch (error: any) {
+      handleControllerError(error, res);
+    }
+  }
+
+   static async createQuizAttempt(data: { quizId: string; userId: string }) {
+    return await prisma.$transaction(async (tx) => {
+      const quiz = await tx.quiz.findUnique({
+        where: { id: data.quizId },
+        include: { questions: true },
+      });
+
+      if (!quiz) throw new ApiError(404, "Quiz not found");
+
+
+      return await tx.quizAttempt.create({
+        data: {
+          quizId: data.quizId,
+          userId: data.userId,
+          responses: {
+            create: quiz.questions.map((q) => ({
+              questionId: q.id,
+              status: "SKIPPED",
+            })),
+          },
+        },
+        include: { responses: true },
+      });
+    });
+  }
+
+  static async submitResponse(
+    attemptId: string,
+    questionId: string,
+    response: { answer: string; status: ResponseStatus }
+   ) {
+    return await prisma.$transaction(async (tx) => {
+      const attempt = await tx.quizAttempt.findUnique({
+        where: { id: attemptId, completedAt: null },
+      });
+
+      if (!attempt) throw new ApiError(404, "Active attempt not found");
+
+      return await tx.response.update({
+        where: {
+          quizAttemptId_questionId: { quizAttemptId: attemptId, questionId },
+        },
+        data: {
+          answer: response.answer,
+          status: { set: response.status as ResponseStatus },
+          isCorrect: await this.validateAnswer(questionId, response.answer),
+        },
+      });
+    });
+   }
