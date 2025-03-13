@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
-} from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 interface TimelineEntry {
   title: string;

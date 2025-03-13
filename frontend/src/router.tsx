@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Landing />,
+        element: <DashboardLayout />,
       },
       {
         path: "goals",
@@ -102,11 +102,6 @@ const router = createBrowserRouter([
         element: <QuestionView />,
       },
     ],
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "dashboard",
-    element: <DashboardLayout />,
     errorElement: <ErrorPage />,
   },
 
