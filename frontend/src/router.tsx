@@ -10,7 +10,7 @@ import TestAttempt from "./pages/TestAttempt";
 import TestResult from "./pages/TestResult";
 import QuestionsList from "./pages/QuestionList";
 import QuestionView from "./pages/Question";
-import Layout from "./layout";
+// import Layout from "./layout";
 import GoalsList from "./components/GoalsList";
 import CoursesList from "./components/CourseList";
 import SubjectDetail from "./components/SubjectDetail";
@@ -22,7 +22,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
