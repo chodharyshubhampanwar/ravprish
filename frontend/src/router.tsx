@@ -18,6 +18,7 @@ import SubjectDetail from "./components/SubjectDetail";
 import ChapterDetail from "./components/ ChapterDetails";
 import Instagram from "./components/Instagram";
 import Facebook from "./components/Facebook";
+import DashboardLayout from "./layout/DashboardLayout";
 // import ProtectedRoute from "./components/ProtectedRoute";
 const router = createBrowserRouter([
   {
@@ -103,6 +104,12 @@ const router = createBrowserRouter([
     ],
     errorElement: <ErrorPage />,
   },
+  {
+    path: "dashboard",
+    element: <DashboardLayout />,
+    errorElement: <ErrorPage />,
+  },
+
   {
     path: "social",
     element: <Instagram />,

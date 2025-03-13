@@ -1,158 +1,100 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/AuthStore";
-import { Menu, Search, BellRing } from "lucide-react";
+import { useState } from "react";
 
-interface NavbarProps {
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface NavItem {
+  name: string;
+  href: string;
 }
 
-const Navbar = ({ setSidebarOpen }: NavbarProps) => {
-  const { user, signOut, loading, signInWithGoogle } = useAuthStore();
-  const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+const navItems: NavItem[] = [
+  { name: "Products", href: "#" },
+  { name: "Solutions", href: "#" },
+  { name: "Resources", href: "#" },
+  { name: "Enterprise", href: "#" },
+  { name: "Docs", href: "#" },
+  { name: "Pricing", href: "#" },
+];
 
-  // Create a ref for the dropdown container
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle(() => {
-        navigate("/home");
-      });
-    } catch (error) {
-      console.error("Sign-in error:", error);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(() => navigate("/signin"));
-    } catch (error) {
-      console.error("Sign-out error:", error);
-    }
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching for:", searchQuery);
-  };
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b flex items-center px-4 z-50">
-      <button
-        onClick={() => setSidebarOpen((prev) => !prev)}
-        className="p-2 hover:bg-gray-100 rounded-full"
-      >
-        <Menu className="w-6 h-6 text-gray-700" />
-      </button>
+    <nav className="bg-black px-4 py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
+        {/* Logo / Brand */}
+        <div className="text-2xl font-bold text-[hsla(0,0%,93%,1)]">
+          MyBrand
+        </div>
 
-      <img
-        src="https://res.cloudinary.com/melenqli/image/upload/v1739880250/dah78d9kmslgswfbawht.svg"
-        alt="Logo"
-        className="h-6 ml-4 cursor-pointer"
-        onClick={() => navigate("/")}
-      />
+        {/* Desktop Nav Items */}
+        <div className="hidden space-x-8 md:flex">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-[hsla(0,0%,93%,1)] hover:text-white transition-colors"
+            >
+              {item.name}
+            </a>
+          ))}
+        </div>
 
-      <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-auto px-4">
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-100 text-gray-900 rounded-full py-2 pl-4 pr-10 border focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Search"
-          />
-          <button type="submit" className="absolute right-3 top-2">
-            <Search className="w-5 h-5 text-gray-500" />
+        {/* Desktop Right Actions */}
+        <div className="hidden space-x-4 md:flex">
+          <button className="text-[hsla(0,0%,93%,1)] hover:text-white transition-colors">
+            Log In
+          </button>
+          <button className="rounded border border-gray-600 px-3 py-1 text-[hsla(0,0%,93%,1)] hover:bg-white hover:text-black transition-colors">
+            Sign Up
           </button>
         </div>
-      </form>
 
-      <div className="flex items-center gap-4">
-        <button className="p-2 hover:bg-gray-100 rounded-full">
-          <BellRing className="w-6 h-6 text-gray-700" />
-        </button>
-
-        {user ? (
-          // Wrap the button and dropdown in a container with the ref.
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-full"
-            >
-              <img
-                src={user.avatar || "/default-avatar.png"}
-                className="w-8 h-8 rounded-full"
-                alt="User Avatar"
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden text-[hsla(0,0%,93%,1)] hover:text-white transition-colors focus:outline-none"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Menu"
+        >
+          {/* Hamburger Icon */}
+          <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
+            {isOpen ? (
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M4 5h16v2H4V5zm0 12h16v2H4v-2z"
               />
-            </button>
-
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg border z-50">
-                <div className="p-4 border-b">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={user.avatar || "/default-avatar.png"}
-                      className="w-10 h-10 rounded-full"
-                      alt="User Avatar"
-                    />
-                    <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-sm text-gray-500">@{user.username}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-2">
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                    Help
-                  </button>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 rounded">
-                    Settings
-                  </button>
-                </div>
-                <div className="p-2 border-t">
-                  <button
-                    onClick={handleSignOut}
-                    disabled={loading}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 rounded text-red-600"
-                  >
-                    {loading ? "Logging out..." : "Logout"}
-                  </button>
-                </div>
-              </div>
+            ) : (
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M4 7h16v2H4V7zm0 8h16v2H4v-2z"
+              />
             )}
-          </div>
-        ) : (
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-          >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
-        )}
+          </svg>
+        </button>
       </div>
-    </div>
-  );
-};
 
-export default Navbar;
+      {/* Mobile Nav Items */}
+      {isOpen && (
+        <div className="mt-2 flex flex-col space-y-2 md:hidden">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="block border-b border-gray-800 px-2 py-2 text-[hsla(0,0%,93%,1)] hover:text-white transition-colors"
+            >
+              {item.name}
+            </a>
+          ))}
+          <div className="flex flex-col items-start space-y-2 border-t border-gray-800 pt-2">
+            <button className="w-full text-left text-[hsla(0,0%,93%,1)] hover:text-white transition-colors">
+              Log In
+            </button>
+            <button className="w-full rounded border border-gray-600 px-3 py-1 text-left text-[hsla(0,0%,93%,1)] hover:bg-white hover:text-black transition-colors">
+              Sign Up
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}

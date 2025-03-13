@@ -40,7 +40,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 
 const Dashboard = () => {
@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      <Navbar setSidebarOpen={setSidebarOpen} />
+      {/* <Navbar setSidebarOpen={setSidebarOpen} /> */}
 
       {isSidebarOpen && (
         <div

@@ -2,19 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom utilities */
+@layer utilities {
+  .bg-dotted-grid {
+    background-color: #fff;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0;
+  }
+
+  /* Define custom border utility */
+  .border-border {
+    border-color: hsl(var(--border));
+  }
+
+  /* Define missing outline utility.
+     Note: the slash is escaped so that Tailwind recognizes the class name as "outline-ring/50". */
+  .outline-ring\/50 {
+    outline: 2px solid rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Reset and box-sizing */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-/* Optional: Reset margin and padding to avoid unintended spacing */
-*,
-*::before,
-*::after {
   margin: 0;
   padding: 0;
 }
+
+/* Base styles */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -43,6 +61,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -69,23 +88,13 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
-@layer base {
+
+  /* Apply our custom utilities */
   * {
-    @apply border-border;
+
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-
