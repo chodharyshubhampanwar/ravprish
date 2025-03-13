@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Landing from "./pages/Landing";
 import QuizPage from "./pages/Quiz";
 import DeckPage from "./pages/DeckPage";
 import Flashcard from "./components/Flashcard";
