@@ -1,12 +1,14 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 const svgToDataUri = require("mini-svg-data-uri");
 const colors = require("tailwindcss/colors");
-const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: "class",
+  darkMode: ["class", "class"],
   theme: {
     extend: {
       borderRadius: {
@@ -49,11 +51,46 @@ module.exports = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
+        "color-1": "hsl(var(--color-1))",
+        "color-2": "hsl(var(--color-2))",
+        "color-3": "hsl(var(--color-3))",
+        "color-4": "hsl(var(--color-4))",
+        "color-5": "hsl(var(--color-5))",
+      },
+      animation: {
+        ripple: "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
+        rainbow: "rainbow var(--speed, 2s) infinite linear",
+      },
+      keyframes: {
+        ripple: {
+          "0%, 100%": {
+            transform: "translate(-50%, -50%) scale(1)",
+          },
+          "50%": {
+            transform: "translate(-50%, -50%) scale(0.9)",
+          },
+        },
+        rainbow: {
+          "0%": {
+            "background-position": "0%",
+          },
+          "100%": {
+            "background-position": "200%",
+          },
+        },
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
+          },
         },
       },
     },

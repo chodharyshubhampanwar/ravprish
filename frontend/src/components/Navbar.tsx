@@ -22,7 +22,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         {/* Logo / Brand */}
         <div className="text-2xl font-bold text-[hsla(0,0%,93%,1)]">
-          MyBrand
+          Splgence
         </div>
 
         {/* Desktop Nav Items */}

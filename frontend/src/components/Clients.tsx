@@ -1,56 +1,58 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { BentoGrid, BentoGridItem } from "@/components/BentoGrid";
+import {
+  IconClipboardCopy,
+  IconFileBroken,
+  IconSignature,
+  IconTableColumn,
+} from "@tabler/icons-react";
 
-const clients = [
-  { name: "Client A", logo: "🚀" },
-  { name: "Client B", logo: "🌐" },
-  { name: "Client C", logo: "📱" },
-  { name: "Client D", logo: "🏦" },
-  { name: "Client E", logo: "🛍️" },
-  { name: "Client F", logo: "⚕️" },
-];
-
-const Clients: React.FC = () => {
+export function BentoGridSecondDemo() {
   return (
-    <section id="clients" className="py-20 px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto text-center">
-        <motion.h2
-          className="text-3xl font-bold text-gray-900 mb-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          Trusted By
-        </motion.h2>
-        <motion.p
-          className="text-gray-600 mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          Our clients span across multiple industries and geographies.
-        </motion.p>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center">
-          {clients.map((client, index) => (
-            <motion.div
-              key={client.name}
-              className="flex flex-col items-center justify-center"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <div className="text-4xl">{client.logo}</div>
-              <span className="mt-2 text-gray-500 text-sm">{client.name}</span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
+      {items.map((item, i) => (
+        <BentoGridItem
+          key={i}
+          title={item.title}
+          description={item.description}
+          header={item.header}
+          className={item.className}
+          icon={item.icon}
+        />
+      ))}
+    </BentoGrid>
   );
-};
-
-export default Clients;
+}
+const Skeleton = () => (
+  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl   dark:bg-dot-white/[0.2] bg-dot-black/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]  border border-transparent dark:border-white/[0.2] bg-neutral-100 dark:bg-black"></div>
+);
+const items = [
+  {
+    title: "The Dawn of Innovation",
+    description: "Explore the birth of groundbreaking ideas and inventions.",
+    header: <Skeleton />,
+    className: "md:col-span-2",
+    icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Digital Revolution",
+    description: "Dive into the transformative power of technology.",
+    header: <Skeleton />,
+    className: "md:col-span-1",
+    icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Art of Design",
+    description: "Discover the beauty of thoughtful and functional design.",
+    header: <Skeleton />,
+    className: "md:col-span-1",
+    icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Power of Communication",
+    description:
+      "Understand the impact of effective communication in our lives.",
+    header: <Skeleton />,
+    className: "md:col-span-2",
+    icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
+  },
+];

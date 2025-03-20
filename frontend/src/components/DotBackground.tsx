@@ -1,14 +1,4 @@
-// export function DotBackgroundDemo() {
-//   return (
-//     <div className="h-[50rem] w-full dark:bg-white bg-black  dark:bg-dot-black/[0.2] bg-dot-white/[0.2] relative flex items-center justify-center">
-//       {/* Radial gradient for the container to give a faded look */}
-//       <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-white bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-//       <h1 className="text-4xl sm:text-7xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-//         Backgrounds
-//       </h1>
-//     </div>
-//   );
-// }
+// import { RainbowButtonDemo } from "./Newsletter";
 
 export function DotBackgroundDemo() {
   return (
@@ -19,11 +9,11 @@ export function DotBackgroundDemo() {
       <div className="relative z-20 text-center space-y-8 px-4">
         <div className="space-y-4">
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-b from-white to-neutral-300 bg-clip-text text-transparent">
-            Strategic Innovation Partners
+            {`Strategic Innovation Partners`}
           </h1>
           <p className="text-lg md:text-xl text-neutral-300 max-w-2xl mx-auto">
-            Transforming enterprises through digital excellence and future-ready
-            solutions
+            {`Transforming enterprises through digital excellence and future-ready
+            solutions`}
           </p>
         </div>
 
@@ -31,9 +21,10 @@ export function DotBackgroundDemo() {
           <span className="relative text-lg">Start Here</span>
           <span className="absolute right-0 -mr-4 h-8 w-8 rounded-full bg-white/20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-500"></span>
         </button>
+        {/* <RainbowButtonDemo /> */}
 
         <p className="text-sm text-neutral-500 font-medium mt-4 opacity-80">
-          Trusted by Fortune 500 companies worldwide
+          {`Trusted by Fortune 500 companies worldwide`}
         </p>
       </div>
     </div>

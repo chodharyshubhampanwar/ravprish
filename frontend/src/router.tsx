@@ -14,7 +14,7 @@ import QuestionView from "./pages/Question";
 import GoalsList from "./components/GoalsList";
 import CoursesList from "./components/CourseList";
 import SubjectDetail from "./components/SubjectDetail";
-import ChapterDetail from "./components/ ChapterDetails";
+import ChapterDetail from "./components/ChapterDetails";
 import Instagram from "./components/Instagram";
 import Facebook from "./components/Facebook";
 import DashboardLayout from "./layout/DashboardLayout";
